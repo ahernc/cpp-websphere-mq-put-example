@@ -1,10 +1,10 @@
 /*@(#) MQMBID sn=p750-002-131001_DE su=_FswqMCqGEeOZ3ui-rZDONA pn=samples/cpp/imqsput.cpp*/
 // Library:       WebSphere MQ
 // Component:     C++ sample Programs
-// Part:          IMQSPUT.CPP
+// Part:          filname here .cpp
 //
 // Description:   Sample C++ program that puts messages to a named
-//                queue.
+//                queue using the MQWrapperClassLib project. 
 //
 //                IMQSPUT has 3 parameters:
 //                - the name of a queue (required)
@@ -15,176 +15,117 @@
 //                defaults to the default local queue manager. If a
 //                channel is defined, it should have the same format
 //                as the MQSERVER environment variable.
-//    <copyright 
-//    notice="lm-source-program" 
-//    pids="5724-H72," 
-//    years="1994,2012" 
-//    crc="2119159944" > 
-//   Licensed Materials - Property of IBM  
-//    
-//   5724-H72, 
-//    
-//   (C) Copyright IBM Corp. 1994, 2012 All Rights Reserved.  
-//    
-//   US Government Users Restricted Rights - Use, duplication or  
-//   disclosure restricted by GSA ADP Schedule Contract with  
-//   IBM Corp.  
-//    </copyright> 
 
 // #include "stdafx.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <iostream>
+#include <string>
+#include <fstream>
+#include "MQWrapper.h"
 
-#include <imqi.hpp> // WebSphere MQ MQI
+using namespace std;
+
 
 int main(int argc, char * * argv) {
-	ImqQueueManager mgr;				// Queue manager
-	ImqQueue queue;						// Queue
-	ImqMessage msg;						// Data message
-	int      buflen;					// Buffer length
-	char     buffer[256];				// Message buffer
-	ImqChannel * pchannel = 0;			// Channel definition
 
-	printf("Sample IMQSPUT start\n");
-	if (argc < 2) {
-		printf("Required parameter missing - queue name\n");
-		exit((int)99);
-	}
+	MQWrapper::MQWrapper mq;
 
-	// Define a channel for client communication.
-	if (argc > 3) {
-		ImqString strParse(argv[3]);
-		ImqString strToken;
+	//// Q1 QM_TEST CHANNEL1/TCP/localhost(1414)
+	const char * queueName = "Q1";
+	const char * queueManager = "QM_TEST";
+	const char * channelDefinition = "CHANNEL1/TCP/localhost(1414)";
 
-		pchannel = new ImqChannel;
-		pchannel->setHeartBeatInterval(1);
 
-		// Break down the channel definition,
-		// which is of the form "channel-name/transport-type/connection-name".
-		if (strParse.cutOut(strToken, '/')) {
-			pchannel->setChannelName(strToken);
+	cout << "Opening Connection\n";
+	int result = mq.openConnection(queueName, queueManager, channelDefinition);
 
-			if (strParse.cutOut(strToken, '/')) {
+	cout << "You are now connected to MQ! :-) Starting firing in some messages... \n Enter a new line with no text to close and disconnect from MQ\n";
 
-				// Interpret the transport type.
-				if (strToken.upperCase() == (ImqString)"LU62") {
-					pchannel->setTransportType(MQXPT_LU62);
-				}
-				if (strToken.upperCase() == (ImqString)"NETBIOS") {
-					pchannel->setTransportType(MQXPT_NETBIOS);
-				}
-				if (strToken.upperCase() == (ImqString)"SPX") {
-					pchannel->setTransportType(MQXPT_SPX);
-				}
-				if (strToken.upperCase() == (ImqString)"TCP") {
-					pchannel->setTransportType(MQXPT_TCP);
-				}
 
-				// Establish the connection name.
-				if (strParse.cutOut(strToken)) {
-					pchannel->setConnectionName(strToken);
-				}
-			}
-		}
 
-		mgr.setChannelReference(pchannel);
-	}
-
-	// Connect to queue manager
-	if (argc > 2) {
-		mgr.setName(argv[2]);
-	}
-
-	if (!mgr.connect()) {
-
-		/* stop if it failed */
-		printf("ImqQueueManager::connect ended with reason code %d\n",
-			(int)mgr.reasonCode());
-		exit((int)mgr.reasonCode());
-	}
-
-	// Associate queue with queue manager.
-	queue.setConnectionReference(mgr);
-
-	// Use parameter as the name of the target queue
-	queue.setName(argv[1]);
-	printf("target queue is %s\n", argv[1]);
-
-	// Open the target message queue for output
-	queue.setOpenOptions(MQOO_OUTPUT /* open queue for output        */
-		+ MQOO_FAIL_IF_QUIESCING);     /* but not if MQM stopping      */
-	queue.open();
-
-	/* report reason, if any; stop if failed      */
-	if (queue.reasonCode()) {
-		printf("ImqQueue::open ended with reason code %d\n",
-			(int)queue.reasonCode());
-	}
-
-	if (queue.completionCode() == MQCC_FAILED) {
-		printf("unable to open queue for output\n");
-	}
-
+	/////////////////////////////////////////////////////////////////////////////////
 	// Read lines from the console and put them to the message queue
 	// Loop until end of input, or there is a failure
-	msg.useEmptyBuffer(buffer, sizeof(buffer));
-	msg.setFormat(MQFMT_STRING);      /* character string format    */
+	while (true) {
+		cout << "Enter a message:  ";
+		//int      buflen;					
+		//char     buffer[256];				
+		//if (fgets(buffer, sizeof(buffer), stdin)) {
+		//	/* console read successful    */
+		//	buflen = (int)strlen(buffer); /* length without null        */
+		//	if (buffer[buflen - 1] == '\n') { /* last char is a new-line  */
+		//		buffer[buflen - 1] = '\0';      /* replace new-line with null */
+		//		--buflen;                     /* reduce buffer length       */
+		//	}
+		//}
+		//else {
+		//	buflen = 0;           /* treat EOF same as null line          */
+		//}
 
-	while (queue.completionCode() != MQCC_FAILED) {
+		//// Put each buffer to the message queue
+		//if (buflen > 0) {
 
-		if (fgets(buffer, sizeof(buffer), stdin)) {
-			/* console read successful    */
-			buflen = (int)strlen(buffer); /* length without null        */
-			if (buffer[buflen - 1] == '\n') { /* last char is a new-line  */
-				buffer[buflen - 1] = '\0';      /* replace new-line with null */
-				--buflen;                     /* reduce buffer length       */
-			}
-		}
-		else {
-			buflen = 0;           /* treat EOF same as null line          */
-		}
+		//	
+		//}
+		//else {
+		//	/* quit loop when empty line is read */
+		//	break;
+		//}
+		
+		/*char input[256];
+		cin.getline(input, sizeof(input));
+		int lengthOfInput = (int)strlen(input);
+		if (lengthOfInput == 0)
+			break;*/
 
-		// Put each buffer to the message queue
-		if (buflen > 0) {
-			msg.setMessageLength(buflen);
-			if (!queue.put(msg)) {
 
-				/* report reason, if any */
-				printf("ImqQueue::put ended with reason code %d\n",
-					(int)queue.reasonCode());
-			}
 
-		}
-		else {
-			/* quit loop when empty line is read */
+
+		/*string s;
+		getline(std::cin >> std::ws, s);
+
+		int len = s.length();
+		if (len == 0)
 			break;
+
+		const char* input = s.c_str();
+		if (mq.putMessage(input) == 0) {
+			cout << "Message added to queue. Horray.\n";
+		}		*/
+
+
+		std::ifstream file("c:\\dev2\\_testFile.html");
+		std::string str;
+		std::string file_contents;
+		while (std::getline(file, str))
+		{
+			file_contents += str;
+			file_contents.push_back('\n');
 		}
+		const char *data = file_contents.c_str();
+		mq.putMessage(data);
+
 	}
+	/////////////////////////////////////////////////////////////////////////////////
 
-	// Close the target queue (if it was opened)
-	if (!queue.close()) {
 
-		/* report reason, if any     */
-		printf("ImqQueue::close ended with reason code %d\n",
-			(int)queue.reasonCode());
-	}
+	cout << "Disconnecting\n";
 
-	// Disconnect from MQM if not already connected (the
-	// ImqQueueManager object handles this situation automatically)
-	if (!mgr.disconnect()) {
+	int disc = mq.disconnect();
 
-		/* report reason, if any     */
-		printf("ImqQueueManager::disconnect ended with reason code %d\n",
-			(int)mgr.reasonCode());
-	}
+	cout << "Disconnected\n";
 
-	// Tidy up the channel object if allocated.
-	if (pchannel) {
-		mgr.setChannelReference();
-		delete pchannel;
-	}
+	mq.~MQWrapper();
 
-	printf("Sample IMQSPUT end\n");
-	return(0);
+	cout << "Deconstructor called\n";
+
+	cout << "Press any key...\n";
+
+	getchar();
+
+	cout << "Exiting\n";
+
+	//return(0);
+	exit((int)0);
 }

@@ -20,33 +20,33 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{E29C2539-E5C8-45BD-A97E-D33AEEA4DCAC}</ProjectGuid>
+    <ProjectGuid>{BF874DEE-BFE1-4446-AA60-98B78AA38B56}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>CppMqtest4</RootNamespace>
+    <RootNamespace>mqwrapper</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -71,56 +71,46 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\dev2\cpp-websphere-mq-put-example\CppMqtest4\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\dev2\cpp-websphere-mq-put-example\CppMqtest4\mqwrapper\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files (x86)\IBM\WebSphere MQ\tools\Lib;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>C:\Program Files (x86)\IBM\WebSphere MQ\tools\Lib;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\dev2\cpp-websphere-mq-put-example\CppMqtest4\mqwrapper;C:\dev2\cpp-websphere-mq-put-example\CppMqtest4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\dev2\cpp-websphere-mq-put-example\CppMqtest4\mqwrapper\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>imqb23vn.Lib;imqc23vn.Lib;imqs23vn.Lib;imqx23vn.lib;mqccics4.LIB;mqcxa.LIB;mqic.LIB;mqic32.Lib;mqic32xa.LIB;mqiccb.LIB;mqiccb32.Lib;mqiccbb.Lib;mqicxa.LIB;mqm.Lib;mqmax.Lib;mqmcb.LIB;mqmcb32.Lib;mqmcbb.Lib;mqmcics4.Lib;mqmvx.Lib;mqmvxd.Lib;mqmxa.Lib;mqmzf.Lib;mqutl.LIB;mqutx.LIB;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\dev2\cpp-websphere-mq-put-example\CppMqtest4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
@@ -128,73 +118,27 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="StandaloneAppNoLib.cpp.txt" />
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\amqsvmha.h" />
-    <ClInclude Include="include\cmqbc.h" />
-    <ClInclude Include="include\cmqc.h" />
-    <ClInclude Include="include\cmqcfc.h" />
-    <ClInclude Include="include\cmqec.h" />
-    <ClInclude Include="include\cmqpsc.h" />
-    <ClInclude Include="include\cmqxc.h" />
-    <ClInclude Include="include\cmqzc.h" />
-    <ClInclude Include="include\imqair.hpp" />
-    <ClInclude Include="include\imqbin.hpp" />
-    <ClInclude Include="include\imqcac.hpp" />
-    <ClInclude Include="include\imqchl.hpp" />
-    <ClInclude Include="include\imqcih.hpp" />
-    <ClInclude Include="include\imqdlh.hpp" />
-    <ClInclude Include="include\imqdst.hpp" />
-    <ClInclude Include="include\imqerr.hpp" />
-    <ClInclude Include="include\imqgmo.hpp" />
-    <ClInclude Include="include\imqhdr.hpp" />
-    <ClInclude Include="include\imqi.hpp" />
-    <ClInclude Include="include\imqiih.hpp" />
-    <ClInclude Include="include\imqitm.hpp" />
-    <ClInclude Include="include\imqmgr.hpp" />
-    <ClInclude Include="include\imqmsg.hpp" />
-    <ClInclude Include="include\imqmtr.hpp" />
-    <ClInclude Include="include\imqnml.hpp" />
-    <ClInclude Include="include\imqobj.hpp" />
-    <ClInclude Include="include\imqpmo.hpp" />
-    <ClInclude Include="include\imqpro.hpp" />
-    <ClInclude Include="include\imqque.hpp" />
-    <ClInclude Include="include\imqrfh.hpp" />
-    <ClInclude Include="include\imqstr.hpp" />
-    <ClInclude Include="include\imqtrg.hpp" />
-    <ClInclude Include="include\imqtype.h" />
-    <ClInclude Include="include\imqwih.hpp" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
+    <ClInclude Include="MQWrapper.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CppMqtest4.cpp" />
-    <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="mqwrapper\mqwrapper.vcxproj">
-      <Project>{bf874dee-bfe1-4446-aa60-98b78aa38b56}</Project>
-    </ProjectReference>
+    <ClCompile Include="MQWrapper.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
