@@ -21,7 +21,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <string>
-#include <fstream>
+//#include <fstream>
 #include "MQWrapper.h"
 
 using namespace std;
@@ -30,6 +30,7 @@ using namespace std;
 int main(int argc, char * * argv) {
 
 	MQWrapper::MQWrapper mq;
+
 
 	//// Q1 QM_TEST CHANNEL1/TCP/localhost(1414)
 	const char * queueName = "Q1";
@@ -40,8 +41,7 @@ int main(int argc, char * * argv) {
 	cout << "Opening Connection\n";
 	int result = mq.openConnection(queueName, queueManager, channelDefinition);
 
-	cout << "You are now connected to MQ! :-) Starting firing in some messages... \n Enter a new line with no text to close and disconnect from MQ\n";
-
+	cout << "You are now connected to MQ! :-) Type the message and hit Enter to push it to the Queue \nEnter no text to close and disconnect from MQ\n";
 
 
 	/////////////////////////////////////////////////////////////////////////////////
@@ -49,29 +49,28 @@ int main(int argc, char * * argv) {
 	// Loop until end of input, or there is a failure
 	while (true) {
 		cout << "Enter a message:  ";
-		//int      buflen;					
-		//char     buffer[256];				
-		//if (fgets(buffer, sizeof(buffer), stdin)) {
-		//	/* console read successful    */
-		//	buflen = (int)strlen(buffer); /* length without null        */
-		//	if (buffer[buflen - 1] == '\n') { /* last char is a new-line  */
-		//		buffer[buflen - 1] = '\0';      /* replace new-line with null */
-		//		--buflen;                     /* reduce buffer length       */
-		//	}
-		//}
-		//else {
-		//	buflen = 0;           /* treat EOF same as null line          */
-		//}
+		int      buflen;					
+		char     buffer[256];				
+		if (fgets(buffer, sizeof(buffer), stdin)) {
+			/* console read successful    */
+			buflen = (int)strlen(buffer); /* length without null        */
+			if (buffer[buflen - 1] == '\n') { /* last char is a new-line  */
+				buffer[buflen - 1] = '\0';      /* replace new-line with null */
+				--buflen;                     /* reduce buffer length       */
+			}
+		}
+		else {
+			buflen = 0;           /* treat EOF same as null line          */
+		}
 
-		//// Put each buffer to the message queue
-		//if (buflen > 0) {
-
-		//	
-		//}
-		//else {
-		//	/* quit loop when empty line is read */
-		//	break;
-		//}
+		// Put each buffer to the message queue
+		if (buflen > 0) {
+			mq.putMessage(buffer);
+		}
+		else {
+			/* quit loop when empty line is read */
+			break;
+		}
 		
 		/*char input[256];
 		cin.getline(input, sizeof(input));
@@ -95,16 +94,18 @@ int main(int argc, char * * argv) {
 		}		*/
 
 
-		std::ifstream file("c:\\dev2\\_testFile.html");
-		std::string str;
-		std::string file_contents;
-		while (std::getline(file, str))
-		{
-			file_contents += str;
-			file_contents.push_back('\n');
-		}
-		const char *data = file_contents.c_str();
-		mq.putMessage(data);
+		// File read approach:
+		//std::ifstream file("c:\\dev2\\FRA_835821D.XML");
+		//std::string str;
+		//std::string file_contents;
+		//while (std::getline(file, str))
+		//{
+		//	file_contents += str;
+		//	file_contents.push_back('\n');
+		//}
+		//const char *data = file_contents.c_str();
+		//mq.putMessage(data);
+
 
 	}
 	/////////////////////////////////////////////////////////////////////////////////

@@ -84,6 +84,12 @@ namespace MQWrapper
 
 		queueManager_.setName(QueueManagerName);
 
+		// COLM:
+		MQLONG maxLength = 0;
+		maxLength = queueManager_.maximumMessageLength();
+		// COLM END. 
+
+
 		if (!queueManager_.connect()) {
 
 			// return reason code: to do: enumeration of exception codes 
@@ -91,21 +97,27 @@ namespace MQWrapper
 			return (int)queueManager_.reasonCode();
 		}
 
+
 		// Associate queue with queue manager.
 		queue_.setConnectionReference(queueManager_);
+
 
 		// Use parameter as the name of the target queue
 		queue_.setName(QueueName);
 
+
 		// Open the target message queue for output
 		queue_.setOpenOptions(MQOO_OUTPUT	/* open queue for output        */
 			+ MQOO_FAIL_IF_QUIESCING);		/* but not if MQM stopping      */
+
 		queue_.open();
+
 
 		/* report reason, if any; stop if failed      */
 		if (queue_.reasonCode()) {
 			return (int)queue_.reasonCode();
 		}
+
 
 		if (queue_.completionCode() == MQCC_FAILED) {
 			// printf("unable to open queue for output\n");
@@ -124,22 +136,26 @@ namespace MQWrapper
 
 
 	///**
-	//*	\brief Puts a message into the the MQ.
-	//*
-	//*	If opening a connection, don't forget to close it when you are sure you are finished with it!
-	//*
-	//*	\return An int code representing the success or failure of putting the message into the queue.
-	//*			For the complete list of possible codes, see https://www.ibm.com/support/knowledgecenter/en/SSFKSJ_7.5.0/com.ibm.mq.tro.doc/q040710_.htm
-	//**/
-	int MQWrapper::putMessage(const char* messageContent)
+	//	Puts a message into the the MQ.
+	//
+	//	If opening a connection, don't forget to close it when you are sure you are finished with it!
+	//
+	//	Returns An int code representing the success or failure of putting the message into the queue.
+	//			For the complete list of possible codes, see https://www.ibm.com/support/knowledgecenter/en/SSFKSJ_7.5.0/com.ibm.mq.tro.doc/q040710_.htm
+	//*/
+	int MQWrapper::putMessage(char* messageContent)
 	{
-
 		message_.useEmptyBuffer(messageContent, sizeof(messageContent));
 		message_.setFormat(MQFMT_STRING);      /* character string format */
-
 		const size_t buflen = (int)strlen(messageContent);
 		message_.setMessageLength(buflen);
-		if (!queue_.put(message_)) {
+
+		// COLM:
+		ImqPmo putMessageOptions;
+		putMessageOptions.setOptions(MQPMO_NONE);
+		// COLM END.
+
+		if (!queue_.put(message_, putMessageOptions)) {
 			/* report reason, if any */
 			return (int)queue_.reasonCode();
 		}
