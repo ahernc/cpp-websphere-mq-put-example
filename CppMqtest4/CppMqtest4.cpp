@@ -21,7 +21,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <string>
-//#include <fstream>
+#include <fstream>
 #include "MQWrapper.h"
 
 using namespace std;
@@ -48,35 +48,48 @@ int main(int argc, char * * argv) {
 	// Read lines from the console and put them to the message queue
 	// Loop until end of input, or there is a failure
 	while (true) {
-		cout << "Enter a message:  ";
-		int      buflen;					
-		char     buffer[256];				
-		if (fgets(buffer, sizeof(buffer), stdin)) {
-			/* console read successful    */
-			buflen = (int)strlen(buffer); /* length without null        */
-			if (buffer[buflen - 1] == '\n') { /* last char is a new-line  */
-				buffer[buflen - 1] = '\0';      /* replace new-line with null */
-				--buflen;                     /* reduce buffer length       */
-			}
-		}
-		else {
-			buflen = 0;           /* treat EOF same as null line          */
-		}
 
-		// Put each buffer to the message queue
-		if (buflen > 0) {
-			mq.putMessage(buffer);
+		// File read approach:
+		// std::ifstream file("c:\\dev2\\FRA_835821D.XML");
+		std::ifstream file("C:\\dev2\\cpp-websphere-mq-put-example\\sample_files\\5 exotic trades.xml");
+		//std::ifstream file("c:\\dev2\\shortfile.txt");
+		std::string str;
+		std::string file_contents;
+		while (std::getline(file, str))
+		{
+			file_contents += str;
+			//file_contents.push_back('\n');
 		}
-		else {
-			/* quit loop when empty line is read */
-			break;
-		}
-		
-		/*char input[256];
-		cin.getline(input, sizeof(input));
-		int lengthOfInput = (int)strlen(input);
-		if (lengthOfInput == 0)
-			break;*/
+		const char *data = file_contents.c_str();
+		mq.putMessage(data);
+
+		cout << "Finished!  Press any key to enter thee XML again... ";
+		getchar();
+		//////////cout << "Enter a message:  ";
+		//////////int      buflen;					
+		//////////char     buffer[256];		
+	
+		//////////if (fgets(buffer, sizeof(buffer), stdin)) {
+		//////////	/* console read successful    */
+		//////////	buflen = (int)strlen(buffer); /* length without null        */
+		//////////	if (buffer[buflen - 1] == '\n') { /* last char is a new-line  */
+		//////////		buffer[buflen - 1] = '\0';      /* replace new-line with null */
+		//////////		--buflen;                     /* reduce buffer length       */
+		//////////	}
+		//////////}
+		//////////else {
+		//////////	buflen = 0;           /* treat EOF same as null line          */
+		//////////}
+
+		//////////// Put each buffer to the message queue
+		//////////if (buflen > 0) {
+		//////////	mq.putMessage(buffer, buflen);
+		//////////}
+		//////////else {
+		//////////	/* quit loop when empty line is read */
+		//////////	break;
+		//////////}
+	
 
 
 
@@ -92,20 +105,6 @@ int main(int argc, char * * argv) {
 		if (mq.putMessage(input) == 0) {
 			cout << "Message added to queue. Horray.\n";
 		}		*/
-
-
-		// File read approach:
-		//std::ifstream file("c:\\dev2\\FRA_835821D.XML");
-		//std::string str;
-		//std::string file_contents;
-		//while (std::getline(file, str))
-		//{
-		//	file_contents += str;
-		//	file_contents.push_back('\n');
-		//}
-		//const char *data = file_contents.c_str();
-		//mq.putMessage(data);
-
 
 	}
 	/////////////////////////////////////////////////////////////////////////////////

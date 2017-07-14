@@ -143,19 +143,16 @@ namespace MQWrapper
 	//	Returns An int code representing the success or failure of putting the message into the queue.
 	//			For the complete list of possible codes, see https://www.ibm.com/support/knowledgecenter/en/SSFKSJ_7.5.0/com.ibm.mq.tro.doc/q040710_.htm
 	//*/
-	int MQWrapper::putMessage(char* messageContent)
+	int MQWrapper::putMessage(const char* messageContent)
 	{
-		message_.useEmptyBuffer(messageContent, sizeof(messageContent));
+		size_t strLength = strlen(messageContent) + 1;
+
+		// Use Empty Buffer meant a smallish maximum length we could pass into the message.  useFullBuffer didn't seem to force many limitations
+		message_.useFullBuffer(messageContent, strLength);
 		message_.setFormat(MQFMT_STRING);      /* character string format */
-		const size_t buflen = (int)strlen(messageContent);
-		message_.setMessageLength(buflen);
+		message_.setMessageLength(strLength);
 
-		// COLM:
-		ImqPmo putMessageOptions;
-		putMessageOptions.setOptions(MQPMO_NONE);
-		// COLM END.
-
-		if (!queue_.put(message_, putMessageOptions)) {
+		if (!queue_.put(message_)) {
 			/* report reason, if any */
 			return (int)queue_.reasonCode();
 		}
