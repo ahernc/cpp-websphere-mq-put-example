@@ -38,8 +38,14 @@ int main(int argc, char * * argv) {
 	const char * channelDefinition = "CHANNEL1/TCP/localhost(1414)";
 
 
-	cout << "Opening Connection\n";
-	int result = mq.openConnection(queueName, queueManager, channelDefinition);
+	cout << "Connecting to Queue Manager\n";
+
+	int result = mq.connect(queueManager, channelDefinition);
+
+	cout << "Opening Queue\n";
+
+	mq.open(queueName);
+
 
 	cout << "You are now connected to MQ! :-) Type the message and hit Enter to push it to the Queue \nEnter no text to close and disconnect from MQ\n";
 
@@ -51,7 +57,7 @@ int main(int argc, char * * argv) {
 
 		// File read approach:
 		// std::ifstream file("c:\\dev2\\FRA_835821D.XML");
-		std::ifstream file("C:\\dev2\\cpp-websphere-mq-put-example\\sample_files\\5 exotic trades.xml");
+		std::ifstream file("C:\\dev2\\sample_files\\5 exotic trades.xml");
 		//std::ifstream file("c:\\dev2\\shortfile.txt");
 		std::string str;
 		std::string file_contents;
@@ -61,10 +67,13 @@ int main(int argc, char * * argv) {
 			//file_contents.push_back('\n');
 		}
 		const char *data = file_contents.c_str();
-		mq.putMessage(data);
+		mq.put(data);
 
-		cout << "Finished!  Press any key to enter thee XML again... ";
-		getchar();
+		//cout << "Finished!  Press any key to enter thee XML again... ";
+		//getchar();
+	
+		break;
+
 		//////////cout << "Enter a message:  ";
 		//////////int      buflen;					
 		//////////char     buffer[256];		
@@ -109,12 +118,15 @@ int main(int argc, char * * argv) {
 	}
 	/////////////////////////////////////////////////////////////////////////////////
 
+	cout << "Close the Queue\n";
 
-	cout << "Disconnecting\n";
+	int closeResult = mq.close();
 
-	int disc = mq.disconnect();
+	cout << "Disconnect from the Queue Manager\n";
 
-	cout << "Disconnected\n";
+	int discResult = mq.disconnect();
+
+	cout << "Call Destructor...\n";
 
 	mq.~MQWrapper();
 

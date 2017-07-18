@@ -22,6 +22,10 @@ namespace MQWrapper
 	{
 	}
 
+
+	/**
+	* Deletes the channel referenace in the queue manager, and deletes the pointer to the channel.
+	**/
 	MQWrapper::~MQWrapper()
 	{
 		// To decide: let's say a client "forgets" to call .disconnect.
@@ -37,7 +41,7 @@ namespace MQWrapper
 
 
 	/**
-	*	\brief Opens a connection to MQ.
+	*	\brief Connects to the MQ Queue manager.  Any app using this wrapper should subsequently called the open method and specify the queue name.
 	*
 	*	This can only be called after the Constructor which accepts the parameters abotu the queue.
 	*	If opening a connection, don't forget to close it when you are sure you are finished with it!
@@ -45,7 +49,7 @@ namespace MQWrapper
 	*	\return An int code representing the success or failure.
 	*			For the complete list of possible codes, see https://www.ibm.com/support/knowledgecenter/en/SSFKSJ_7.5.0/com.ibm.mq.tro.doc/q040710_.htm
 	**/
-	int MQWrapper::openConnection(const char* QueueName, const char* QueueManagerName, const char* ChannelDefinition)
+	int MQWrapper::connect(const char* QueueManagerName, const char* ChannelDefinition)
 	{
 		ImqString channelParse(ChannelDefinition);
 		ImqString strToken;
@@ -97,7 +101,17 @@ namespace MQWrapper
 			return (int)queueManager_.reasonCode();
 		}
 
+		// If we get here, we're all good:
+		return 0;
+	}
 
+
+
+	/**
+	* Make sure that the connect method is called before the open method. This merely opens the connection
+	**/
+	int MQWrapper::open(const char* QueueName)
+	{
 		// Associate queue with queue manager.
 		queue_.setConnectionReference(queueManager_);
 
@@ -127,23 +141,21 @@ namespace MQWrapper
 			return (int)MQCC_FAILED;
 		}
 
-		// If we get here, we're all good:
-		return 0;
 	}
 
 
 
 
 
-	///**
-	//	Puts a message into the the MQ.
-	//
-	//	If opening a connection, don't forget to close it when you are sure you are finished with it!
-	//
-	//	Returns An int code representing the success or failure of putting the message into the queue.
-	//			For the complete list of possible codes, see https://www.ibm.com/support/knowledgecenter/en/SSFKSJ_7.5.0/com.ibm.mq.tro.doc/q040710_.htm
-	//*/
-	int MQWrapper::putMessage(const char* messageContent)
+	/**
+	*	Puts a message into the the MQ.
+	*
+	*	If opening a connection, don't forget to close it when you are sure you are finished with it!
+	*
+	*	Returns An int code representing the success or failure of putting the message into the queue.
+	*			For the complete list of possible codes, see https://www.ibm.com/support/knowledgecenter/en/SSFKSJ_7.5.0/com.ibm.mq.tro.doc/q040710_.htm
+	**/
+	int MQWrapper::put(const char* messageContent)
 	{
 		size_t strLength = strlen(messageContent) + 1;
 
@@ -161,9 +173,10 @@ namespace MQWrapper
 	}
 
 
-
-
-	int MQWrapper::disconnect()
+	/**
+	* Closes the queue.	
+	**/
+	int MQWrapper::close()
 	{
 		// Close the target queue (if it was opened)
 		if (!queue_.close()) {
@@ -171,7 +184,22 @@ namespace MQWrapper
 			return (int)queue_.reasonCode();
 		}
 
-		// Disconnect from MQM if not already connected (the
+		// Assume success with a zero value.
+		return 0;
+	}
+
+
+
+	/**
+	* Disconnect from the queue
+	**/
+	int MQWrapper::disconnect()
+	{
+	
+		// Close first:
+		close();
+		
+		// Then Disconnect from MQM if not already connected (the
 		// ImqQueueManager object handles this situation automatically)
 		if (!queueManager_.disconnect()) {
 			return (int)queueManager_.reasonCode();
@@ -181,7 +209,11 @@ namespace MQWrapper
 		return 0;
 	}
 
-	int MQWrapper::getInteger()
+
+	/**
+	* 
+	**/
+	int MQWrapper::setAttributes()
 	{
 		return 0;
 	}
